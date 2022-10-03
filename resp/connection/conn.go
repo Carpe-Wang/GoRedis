@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"bytes"
 	"goRedis/lib/sync/wait"
 	"net"
 	"sync"
@@ -60,4 +61,26 @@ func (c *Connection) GetDBIndex() int {
 // SelectDB selects a database
 func (c *Connection) SelectDB(dbNum int) {
 	c.selectedDB = dbNum
+}
+
+// FakeConn implements redis.Connection for test
+type FakeConn struct {
+	Connection
+	buf bytes.Buffer
+}
+
+// Write writes data to buffer
+func (c *FakeConn) Write(b []byte) error {
+	c.buf.Write(b)
+	return nil
+}
+
+// Clean resets the buffer
+func (c *FakeConn) Clean() {
+	c.buf.Reset()
+}
+
+// Bytes returns written data
+func (c *FakeConn) Bytes() []byte {
+	return c.buf.Bytes()
 }

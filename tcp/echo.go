@@ -20,27 +20,32 @@ import (
 )
 
 // EchoHandler echos received line to client, using for test
+// EchoHandler echos received line to client, using for test
 type EchoHandler struct {
-	activeConn sync.Map       // 记录链接。
-	closing    atomic.Boolean //判断是否正在关闭，如果关闭就不进行连接。
+	activeConn sync.Map
+	closing    atomic.Boolean
 }
 
+// MakeEchoHandler creates EchoHandler
 func MakeHandler() *EchoHandler {
 	return &EchoHandler{}
 }
 
+// EchoClient is client for EchoHandler, using for test
 type EchoClient struct {
 	Conn    net.Conn
 	Waiting wait.Wait
 }
 
+// Close close connection
 func (c *EchoClient) Close() error {
 	c.Waiting.WaitWithTimeout(10 * time.Second)
 	c.Conn.Close()
 	return nil
 }
 
-func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) { //实现handler
+// Handle echos received line to client
+func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 	if h.closing.Get() {
 		// closing handler refuse new connection
 		_ = conn.Close()
@@ -53,6 +58,7 @@ func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) { //实现handl
 
 	reader := bufio.NewReader(conn)
 	for {
+		// may occurs: client EOF, client timeout, handler early close
 		msg, err := reader.ReadString('\n')
 		if err != nil {
 			if err == io.EOF {
@@ -70,6 +76,7 @@ func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) { //实现handl
 	}
 }
 
+// Close stops echo handler
 func (h *EchoHandler) Close() error {
 	logger.Info("handler shutting down...")
 	h.closing.Set(true)

@@ -1,9 +1,5 @@
 package tcp
 
-/**
- * A tcp server
- */
-
 import (
 	"context"
 	"fmt"
@@ -14,18 +10,24 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 )
 
-// Config stores tcp server properties
+/**
+ * A tcp server
+ */
+
 type Config struct {
-	Address string
+	Address    string        `yaml:"address"`
+	MaxConnect uint32        `yaml:"max-connect"`
+	Timeout    time.Duration `yaml:"timeout"`
 }
 
 // ListenAndServeWithSignal binds port and handle requests, blocking until receive stop signal
 func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
 	closeChan := make(chan struct{})
 	sigCh := make(chan os.Signal)
-	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT) //OS层面的信号传递
+	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	go func() {
 		sig := <-sigCh
 		switch sig {
@@ -76,5 +78,4 @@ func ListenAndServe(listener net.Listener, handler tcp.Handler, closeChan <-chan
 		}()
 	}
 	waitDone.Wait()
-
 }

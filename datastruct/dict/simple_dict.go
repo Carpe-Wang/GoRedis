@@ -1,5 +1,6 @@
 package dict
 
+// SimpleDict wraps a map, it is not thread safe
 type SimpleDict struct {
 	m map[string]interface{}
 }
