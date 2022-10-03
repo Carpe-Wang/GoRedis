@@ -9,25 +9,19 @@ import (
 var (
 	nullBulkReplyBytes = []byte("$-1")
 
-	// CRLF is the line separator of redis serialization protocol
 	CRLF = "\r\n"
 )
 
-/* ---- Bulk Reply ---- */
-
-// BulkReply stores a binary-safe string
 type BulkReply struct {
 	Arg []byte
 }
 
-// MakeBulkReply creates  BulkReply
 func MakeBulkReply(arg []byte) *BulkReply {
 	return &BulkReply{
 		Arg: arg,
 	}
 }
 
-// ToBytes marshal redis.Reply
 func (r *BulkReply) ToBytes() []byte {
 	if len(r.Arg) == 0 {
 		return nullBulkReplyBytes
