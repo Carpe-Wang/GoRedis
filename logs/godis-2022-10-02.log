@@ -1,0 +1,1 @@
+[ERROR][main.go:46] 2022/10/02 23:22:56 listen tcp 0.0.0.0:6379: bind: address already in use
