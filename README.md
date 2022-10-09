@@ -1,6 +1,8 @@
 # GoRedis
 
-Go重新Redis
+### 项目简介
+
+* 使用go语言实现Redis的基础命令，比如set，get和AOF等基础功能。
 
 ### 使用方法
 
@@ -34,4 +36,9 @@ Go重新Redis
   * 通过网络调试助手连接TCP客户端`[INFO][server.go:71] 2022/10/09 10:37:30 accept link`。
 
   * 即可正常发送命令。
+
+### AOF
+
+* 主要通过项目下的appendonly.aof记录操作信息。
+* 再重启系统时进行LoadAof防止重启机器信息丢失。
 
