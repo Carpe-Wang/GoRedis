@@ -4,6 +4,6 @@ package resp
 type Connection interface {
 	Write([]byte) error
 	// used for multi database
-	GetDBIndex() int
-	SelectDB(int)
+	GetDBIndex() int //客户端连接的DB
+	SelectDB(int)    //选择DB
 }
