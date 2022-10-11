@@ -14,7 +14,6 @@ import (
 	"sync"
 )
 
-// CmdLine is alias for [][]byte, represents a command line
 type CmdLine = [][]byte
 
 const (
@@ -22,30 +21,27 @@ const (
 )
 
 type payload struct {
-	cmdLine CmdLine
-	dbIndex int
+	cmdLine CmdLine //指令本身
+	dbIndex int     //写入那个DB
 }
 
-// AofHandler receive msgs from channel and write to AOF file
 type AofHandler struct {
-	db          databaseface.Database
-	aofChan     chan *payload
-	aofFile     *os.File
+	db          databaseface.Database //Redis核心
+	aofChan     chan *payload         //写文件的一个缓冲区，文件要落入到硬盘中，速度较慢，需要加Chan
+	aofFile     *os.File              //后期读取appendonly.aof文件
 	aofFilename string
-	// aof goroutine will send msg to main goroutine through this channel when aof tasks finished and ready to shutdown
 	aofFinished chan struct{}
-	// pause aof for start/finish aof rewrite progress
-	pausingAof sync.RWMutex
-	currentDB  int
+	pausingAof  sync.RWMutex
+	currentDB   int //记录指令保存到那个DB
 }
 
-// NewAOFHandler creates a new aof.AofHandler
+// NewAOFHandler 新建handler
 func NewAOFHandler(db databaseface.Database) (*AofHandler, error) {
 	handler := &AofHandler{}
-	handler.aofFilename = config.Properties.AppendFilename
+	handler.aofFilename = config.Properties.AppendFilename //找到配置文件的文件名
 	handler.db = db
 	handler.LoadAof(0)
-	aofFile, err := os.OpenFile(handler.aofFilename, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0600)
+	aofFile, err := os.OpenFile(handler.aofFilename, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0600) //入参依次是，文件名，flag（只读，只写，追加），文件模式
 	if err != nil {
 		return nil, err
 	}
@@ -58,9 +54,9 @@ func NewAOFHandler(db databaseface.Database) (*AofHandler, error) {
 	return handler, nil
 }
 
-// AddAof send command to aof goroutine through channel
+// AddAof 用户的指令包装成payload放入缓冲区
 func (handler *AofHandler) AddAof(dbIndex int, cmdLine CmdLine) {
-	if config.Properties.AppendOnly && handler.aofChan != nil {
+	if config.Properties.AppendOnly && handler.aofChan != nil { //判断是否开AOF功能
 		handler.aofChan <- &payload{
 			cmdLine: cmdLine,
 			dbIndex: dbIndex,
@@ -68,7 +64,7 @@ func (handler *AofHandler) AddAof(dbIndex int, cmdLine CmdLine) {
 	}
 }
 
-// handleAof listen aof channel and write into file
+// handleAof 从缓冲区取出，保存到硬盘中
 func (handler *AofHandler) handleAof() {
 	// serialized execution
 	handler.currentDB = 0
@@ -94,9 +90,8 @@ func (handler *AofHandler) handleAof() {
 	handler.aofFinished <- struct{}{}
 }
 
-// LoadAof read aof file
+// LoadAof 重启系统后从文件中加载到内存中，防止数据丢失
 func (handler *AofHandler) LoadAof(maxBytes int) {
-	// delete aofChan to prevent write again
 	aofChan := handler.aofChan
 	handler.aofChan = nil
 	defer func(aofChan chan *payload) {
@@ -120,7 +115,7 @@ func (handler *AofHandler) LoadAof(maxBytes int) {
 		reader = file
 	}
 	ch := parser.ParseStream(reader)
-	fakeConn := &connection.FakeConn{} // only used for save dbIndex
+	fakeConn := &connection.FakeConn{}
 	for p := range ch {
 		if p.Err != nil {
 			if p.Err == io.EOF {
