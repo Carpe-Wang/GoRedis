@@ -17,7 +17,7 @@ import (
 type CmdLine = [][]byte
 
 const (
-	aofQueueSize = 1 << 16
+	aofQueueSize = 1 << 16 //避免魔法值 65535
 )
 
 type payload struct {
@@ -46,7 +46,7 @@ func NewAOFHandler(db databaseface.Database) (*AofHandler, error) {
 		return nil, err
 	}
 	handler.aofFile = aofFile
-	handler.aofChan = make(chan *payload, aofQueueSize)
+	handler.aofChan = make(chan *payload, aofQueueSize) //设置Chan长度，防止落硬盘速度慢。
 	handler.aofFinished = make(chan struct{})
 	go func() {
 		handler.handleAof()
