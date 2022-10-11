@@ -6,28 +6,25 @@ import (
 	"strconv"
 )
 
+// 自定义回复
 var (
 	nullBulkReplyBytes = []byte("$-1")
-
-	// CRLF is the line separator of redis serialization protocol
-	CRLF = "\r\n"
+	CRLF               = "\r\n"
 )
 
 /* ---- Bulk Reply ---- */
 
-// BulkReply stores a binary-safe string
+// BulkReply 相关逻辑
 type BulkReply struct {
 	Arg []byte
 }
 
-// MakeBulkReply creates  BulkReply
 func MakeBulkReply(arg []byte) *BulkReply {
 	return &BulkReply{
 		Arg: arg,
 	}
 }
 
-// ToBytes marshal redis.Reply
 func (r *BulkReply) ToBytes() []byte {
 	if len(r.Arg) == 0 {
 		return nullBulkReplyBytes
@@ -35,21 +32,17 @@ func (r *BulkReply) ToBytes() []byte {
 	return []byte("$" + strconv.Itoa(len(r.Arg)) + CRLF + string(r.Arg) + CRLF)
 }
 
-/* ---- Multi Bulk Reply ---- */
-
-// MultiBulkReply stores a list of string
+// MultiBulkReply 相关逻辑
 type MultiBulkReply struct {
 	Args [][]byte
 }
 
-// MakeMultiBulkReply creates MultiBulkReply
 func MakeMultiBulkReply(args [][]byte) *MultiBulkReply {
 	return &MultiBulkReply{
 		Args: args,
 	}
 }
 
-// ToBytes marshal redis.Reply
 func (r *MultiBulkReply) ToBytes() []byte {
 	argLen := len(r.Args)
 	var buf bytes.Buffer
@@ -64,28 +57,22 @@ func (r *MultiBulkReply) ToBytes() []byte {
 	return buf.Bytes()
 }
 
-/* ---- Status Reply ---- */
-
-// StatusReply stores a simple status string
+// StatusReply 相关逻辑
 type StatusReply struct {
 	Status string
 }
 
-// MakeStatusReply creates StatusReply
 func MakeStatusReply(status string) *StatusReply {
 	return &StatusReply{
 		Status: status,
 	}
 }
 
-// ToBytes marshal redis.Reply
 func (r *StatusReply) ToBytes() []byte {
 	return []byte("+" + r.Status + CRLF)
 }
 
-/* ---- Int Reply ---- */
-
-// IntReply stores an int64 number
+// IntReply 相关逻辑
 type IntReply struct {
 	Code int64
 }
@@ -97,25 +84,20 @@ func MakeIntReply(code int64) *IntReply {
 	}
 }
 
-// ToBytes marshal redis.Reply
 func (r *IntReply) ToBytes() []byte {
 	return []byte(":" + strconv.FormatInt(r.Code, 10) + CRLF)
 }
 
-/* ---- Error Reply ---- */
-
-// ErrorReply is an error and redis.Reply
+// ErrorReply 相关逻辑
 type ErrorReply interface {
 	Error() string
 	ToBytes() []byte
 }
 
-// StandardErrReply represents handler error
 type StandardErrReply struct {
 	Status string
 }
 
-// ToBytes marshal redis.Reply
 func (r *StandardErrReply) ToBytes() []byte {
 	return []byte("-" + r.Status + CRLF)
 }
@@ -124,14 +106,13 @@ func (r *StandardErrReply) Error() string {
 	return r.Status
 }
 
-// MakeErrReply creates StandardErrReply
+// MakeErrReply 相关逻辑
 func MakeErrReply(status string) *StandardErrReply {
 	return &StandardErrReply{
 		Status: status,
 	}
 }
 
-// IsErrorReply returns true if the given reply is error
 func IsErrorReply(reply resp.Reply) bool {
 	return reply.ToBytes()[0] == '-'
 }
