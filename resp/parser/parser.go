@@ -27,11 +27,11 @@ func ParseStream(reader io.Reader) <-chan *Payload {
 }
 
 type readState struct {
-	readingMultiLine  bool
-	expectedArgsCount int
+	readingMultiLine  bool //解析器正在解析多行或单行数据
+	expectedArgsCount int  //正在读去的指令应该有几个参数
 	msgType           byte
 	args              [][]byte
-	bulkLen           int64
+	bulkLen           int64 //字节组的长度
 }
 
 func (s *readState) finished() bool { //记录解析是不是没有完成
