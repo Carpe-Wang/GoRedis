@@ -34,7 +34,7 @@ type readState struct {
 	bulkLen           int64
 }
 
-func (s *readState) finished() bool {
+func (s *readState) finished() bool { //记录解析是不是没有完成
 	return s.expectedArgsCount > 0 && len(s.args) == s.expectedArgsCount
 }
 
