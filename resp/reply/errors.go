@@ -33,8 +33,7 @@ func MakeArgNumErrReply(cmd string) *ArgNumErrReply {
 	}
 }
 
-//SyntaxErrReply 相关逻辑
-
+// SyntaxErrReply 相关逻辑
 type SyntaxErrReply struct{}
 
 var syntaxErrBytes = []byte("-Err syntax error\r\n")
