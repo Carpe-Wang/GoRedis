@@ -22,7 +22,7 @@ type Payload struct {
 // ParseStream  从io中读数据并且加载到Channel
 func ParseStream(reader io.Reader) <-chan *Payload {
 	ch := make(chan *Payload)
-	go parseScore(reader, ch)
+	go parseScore(reader, ch) //协程并发解决解析
 	return ch
 }
 
@@ -241,7 +241,7 @@ func readBody(msg []byte, state *readState) error {
 		if err != nil {
 			return errors.New("protocol error: " + string(msg))
 		}
-		if state.bulkLen <= 0 { // null bulk in multi bulks
+		if state.bulkLen <= 0 {
 			state.args = append(state.args, []byte{})
 			state.bulkLen = 0
 		}
