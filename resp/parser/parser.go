@@ -22,7 +22,7 @@ type Payload struct {
 // ParseStream  从io中读数据并且加载到Channel
 func ParseStream(reader io.Reader) <-chan *Payload {
 	ch := make(chan *Payload)
-	go parse0(reader, ch)
+	go parseScore(reader, ch)
 	return ch
 }
 
@@ -38,7 +38,7 @@ func (s *readState) finished() bool { //记录解析是不是没有完成
 	return s.expectedArgsCount > 0 && len(s.args) == s.expectedArgsCount
 }
 
-func parse0(reader io.Reader, ch chan<- *Payload) {
+func parseScore(reader io.Reader, ch chan<- *Payload) { //解析用户发送的信息
 	defer func() {
 		if err := recover(); err != nil {
 			logger.Error(string(debug.Stack()))
