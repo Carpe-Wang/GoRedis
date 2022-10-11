@@ -31,7 +31,7 @@ func MakeOkReply() *OkReply {
 
 var nullBulkBytes = []byte("$-1\r\n") // nil，注：不是空
 
-type NullBulkReply struct{} // 空的字符串回复
+type NullBulkReply struct{}
 
 func (r *NullBulkReply) ToBytes() []byte {
 	return nullBulkBytes
@@ -41,7 +41,7 @@ func MakeNullBulkReply() *NullBulkReply {
 	return &NullBulkReply{}
 }
 
-var emptyMultiBulkBytes = []byte("*0\r\n")
+var emptyMultiBulkBytes = []byte("*0\r\n") //空数组
 
 type EmptyMultiBulkReply struct{}
 
@@ -49,7 +49,7 @@ func (r *EmptyMultiBulkReply) ToBytes() []byte {
 	return emptyMultiBulkBytes
 }
 
-type NoReply struct{}
+type NoReply struct{} //空回复
 
 var noBytes = []byte("")
 
