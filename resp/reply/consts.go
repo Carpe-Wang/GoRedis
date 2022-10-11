@@ -29,9 +29,9 @@ func MakeOkReply() *OkReply {
 	return theOkReply
 }
 
-var nullBulkBytes = []byte("$-1\r\n")
+var nullBulkBytes = []byte("$-1\r\n") // 空字符串回复的常量
 
-type NullBulkReply struct{}
+type NullBulkReply struct{} // 空的字符串回复
 
 func (r *NullBulkReply) ToBytes() []byte {
 	return nullBulkBytes
