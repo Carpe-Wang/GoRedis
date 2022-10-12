@@ -140,6 +140,7 @@ func parseScore(reader io.Reader, ch chan<- *Payload) { //解析用户发送的�
 }
 
 func readLine(bufReader *bufio.Reader, state *readState) ([]byte, bool, error) { //注意这里是\r\n为一行
+	//读取了$，严格按照字符个数
 	var msg []byte
 	var err error
 	if state.bulkLen == 0 { // 读取正常的line
