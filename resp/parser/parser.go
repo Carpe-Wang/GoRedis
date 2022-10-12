@@ -49,7 +49,6 @@ func parseScore(reader io.Reader, ch chan<- *Payload) { //解析用户发送的�
 	var err error
 	var msg []byte
 	for {
-		// read line
 		var ioErr bool
 		msg, ioErr, err = readLine(bufReader, &state)
 		if err != nil {
@@ -140,7 +139,7 @@ func parseScore(reader io.Reader, ch chan<- *Payload) { //解析用户发送的�
 	}
 }
 
-func readLine(bufReader *bufio.Reader, state *readState) ([]byte, bool, error) {
+func readLine(bufReader *bufio.Reader, state *readState) ([]byte, bool, error) { //注意这里是\r\n为一行
 	var msg []byte
 	var err error
 	if state.bulkLen == 0 { // 读取正常的line
