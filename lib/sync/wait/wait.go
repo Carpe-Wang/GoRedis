@@ -5,28 +5,28 @@ import (
 	"time"
 )
 
-// Wait is similar with sync.WaitGroup which can wait with timeout
+// Wait 与sync.WaitGroup类似，可以超时等待
 type Wait struct {
 	wg sync.WaitGroup
 }
 
-// Add adds delta, which may be negative, to the WaitGroup counter.
+// Add 将增量（可能为负数）添加到WaitGroup计数器。
 func (w *Wait) Add(delta int) {
 	w.wg.Add(delta)
 }
 
-// Done decrements the WaitGroup counter by one
+// Done 将WaitGroup计数器减少一
 func (w *Wait) Done() {
 	w.wg.Done()
 }
 
-// Wait blocks until the WaitGroup counter is zero.
+// Wait 直到WaitGroup计数器为零。
 func (w *Wait) Wait() {
 	w.wg.Wait()
 }
 
-// WaitWithTimeout blocks until the WaitGroup counter is zero or timeout
-// returns true if timeout
+// WaitWithTimeout 阻塞，直到WaitGroup计数器为零或超时
+// returns 如果超时return ture
 func (w *Wait) WaitWithTimeout(timeout time.Duration) bool {
 	c := make(chan bool, 1)
 	go func() {
