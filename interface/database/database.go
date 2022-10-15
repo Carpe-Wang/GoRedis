@@ -4,17 +4,17 @@ import (
 	"goRedis/interface/resp"
 )
 
-// CmdLine is alias for [][]byte, represents a command line
+// CmdLine 是[][]字节的别名，表示命令行
 type CmdLine = [][]byte
 
-// Database is the interface for redis style storage engine
+// Database redis风格存储接口
 type Database interface {
 	Exec(client resp.Connection, args [][]byte) resp.Reply
 	AfterClientClose(c resp.Connection)
 	Close()
 }
 
-// DataEntity stores data bound to a key, including a string, list, hash, set and so on
+// DataEntity 存储绑定到键的数据，包括字符串、列表、哈希、集等
 type DataEntity struct {
 	Data interface{}
 }
