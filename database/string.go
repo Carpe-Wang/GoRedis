@@ -21,7 +21,6 @@ func (db *DB) getAsString(key string) ([]byte, reply.ErrorReply) {
 	return bytes, nil
 }
 
-// execGet returns string value bound to the given key
 func execGet(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	bytes, err := db.getAsString(key)
@@ -40,7 +39,6 @@ const (
 	updatePolicy        // set ex
 )
 
-// execSet sets string value and time to live to the given key
 func execSet(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	value := args[1]
@@ -86,7 +84,6 @@ func execSet(db *DB, args [][]byte) resp.Reply {
 	return &reply.NullBulkReply{}
 }
 
-// execSetNX sets string if not exists
 func execSetNX(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	value := args[1]
@@ -98,7 +95,6 @@ func execSetNX(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(int64(result))
 }
 
-// execMSet sets multi key-value in database
 func execMSet(db *DB, args [][]byte) resp.Reply {
 	if len(args)%2 != 0 {
 		return reply.MakeSyntaxErrReply()
@@ -120,7 +116,6 @@ func execMSet(db *DB, args [][]byte) resp.Reply {
 	return &reply.OkReply{}
 }
 
-// execMGet get multi key-value from database
 func execMGet(db *DB, args [][]byte) resp.Reply {
 	keys := make([]string, len(args))
 	for i, v := range args {
@@ -145,7 +140,6 @@ func execMGet(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeMultiBulkReply(result)
 }
 
-// execMSetNX sets multi key-value in database, only if none of the given keys exist
 func execMSetNX(db *DB, args [][]byte) resp.Reply {
 	// parse args
 	if len(args)%2 != 0 {
@@ -174,7 +168,6 @@ func execMSetNX(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(1)
 }
 
-// execGetSet sets value of a string-type key and returns its old value
 func execGetSet(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	value := args[1]
@@ -191,7 +184,6 @@ func execGetSet(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeBulkReply(old)
 }
 
-// execIncr increments the integer value of a key by one
 func execIncr(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 
@@ -249,7 +241,6 @@ func execIncrBy(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(delta)
 }
 
-// execDecr decrements the integer value of a key by one
 func execDecr(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 
