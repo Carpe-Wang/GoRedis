@@ -1,24 +1,24 @@
 package dict
 
-// SimpleDict wraps a map, it is not thread safe
+// SimpleDict 注意：并发不安全
 type SimpleDict struct {
 	m map[string]interface{}
 }
 
-// MakeSimple makes a new map
+// MakeSimple 创建新map
 func MakeSimple() *SimpleDict {
 	return &SimpleDict{
 		m: make(map[string]interface{}),
 	}
 }
 
-// Get returns the binding value and whether the key is exist
+// Get 返回绑定的value不管key是否存在
 func (dict *SimpleDict) Get(key string) (val interface{}, exists bool) {
 	val, ok := dict.m[key]
 	return val, ok
 }
 
-// Len returns the number of dict
+// Len dict的长度
 func (dict *SimpleDict) Len() int {
 	if dict.m == nil {
 		panic("m is nil")
@@ -26,7 +26,6 @@ func (dict *SimpleDict) Len() int {
 	return len(dict.m)
 }
 
-// Put puts key value into dict and returns the number of new inserted key-value
 func (dict *SimpleDict) Put(key string, val interface{}) (result int) {
 	_, existed := dict.m[key]
 	dict.m[key] = val
@@ -36,7 +35,6 @@ func (dict *SimpleDict) Put(key string, val interface{}) (result int) {
 	return 1
 }
 
-// PutIfAbsent puts value if the key is not exists and returns the number of updated key-value
 func (dict *SimpleDict) PutIfAbsent(key string, val interface{}) (result int) {
 	_, existed := dict.m[key]
 	if existed {
@@ -46,7 +44,6 @@ func (dict *SimpleDict) PutIfAbsent(key string, val interface{}) (result int) {
 	return 1
 }
 
-// PutIfExists puts value if the key is exist and returns the number of inserted key-value
 func (dict *SimpleDict) PutIfExists(key string, val interface{}) (result int) {
 	_, existed := dict.m[key]
 	if existed {
