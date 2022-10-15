@@ -11,20 +11,18 @@ import (
 
 // DB stores data and execute user's commands
 type DB struct {
-	index int
-	// key -> DataEntity
+	index  int // 数据编号
 	data   dict.Dict
 	addAof func(CmdLine)
 }
 
-// ExecFunc is interface for command executor
-// args don't include cmd line
+// ExecFunc command执行器的接口
+// 参数不包括cmdline
 type ExecFunc func(db *DB, args [][]byte) resp.Reply
 
-// CmdLine is alias for [][]byte, represents a command line
 type CmdLine = [][]byte
 
-// makeDB create DB instance
+// makeDB 创建DB实例
 func makeDB() *DB {
 	db := &DB{
 		data:   dict.MakeSyncDict(),
@@ -33,7 +31,7 @@ func makeDB() *DB {
 	return db
 }
 
-// Exec executes command within one database
+// Exec 在一个DB中执行命令
 func (db *DB) Exec(c resp.Connection, cmdLine [][]byte) resp.Reply {
 
 	cmdName := strings.ToLower(string(cmdLine[0]))
@@ -56,7 +54,7 @@ func validateArity(arity int, cmdArgs [][]byte) bool {
 	return argNum >= -arity
 }
 
-/* ---- data Access ----- */
+/* ---- 连接数据库 ----- */
 
 // GetEntity returns DataEntity bind to given key
 func (db *DB) GetEntity(key string) (*database.DataEntity, bool) {
