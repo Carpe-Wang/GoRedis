@@ -5,16 +5,19 @@ import (
 	"os"
 )
 
+// checkNotExist 检查文件是否存在
 func checkNotExist(src string) bool {
 	_, err := os.Stat(src)
 	return os.IsNotExist(err)
 }
 
+// checkPermission 是否有读写权限
 func checkPermission(src string) bool {
 	_, err := os.Stat(src)
 	return os.IsPermission(err)
 }
 
+// isNotExistMkDir 是否存在文件夹
 func isNotExistMkDir(src string) error {
 	if notExist := checkNotExist(src); notExist == true {
 		if err := mkDir(src); err != nil {
@@ -24,6 +27,7 @@ func isNotExistMkDir(src string) error {
 	return nil
 }
 
+// 如果没有相关文件夹，则生成
 func mkDir(src string) error {
 	err := os.MkdirAll(src, os.ModePerm)
 	if err != nil {
