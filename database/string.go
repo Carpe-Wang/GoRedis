@@ -209,7 +209,6 @@ func execIncr(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(1)
 }
 
-// execIncrBy increments the integer value of a key by given value
 func execIncrBy(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	rawDelta := string(args[1])
@@ -267,7 +266,6 @@ func execDecr(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(-1)
 }
 
-// execDecrBy decrements the integer value of a key by onedecrement
 func execDecrBy(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	rawDelta := string(args[1])
@@ -299,7 +297,6 @@ func execDecrBy(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(-delta)
 }
 
-// execStrLen returns len of string value bound to the given key
 func execStrLen(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	bytes, err := db.getAsString(key)
@@ -312,7 +309,6 @@ func execStrLen(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(int64(len(bytes)))
 }
 
-// execAppend sets string value to the given key
 func execAppend(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	bytes, err := db.getAsString(key)
@@ -327,8 +323,6 @@ func execAppend(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeIntReply(int64(len(bytes)))
 }
 
-// execSetRange overwrites part of the string stored at key, starting at the specified offset.
-// If the offset is larger than the current length of the string at key, the string is padded with zero-bytes.
 func execSetRange(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	offset, errNative := strconv.ParseInt(string(args[1]), 10, 64)
