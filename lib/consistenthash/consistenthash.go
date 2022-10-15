@@ -5,17 +5,17 @@ import (
 	"sort"
 )
 
-// HashFunc defines function to generate hash code
+// HashFunc 定义用于生成hash的函数
 type HashFunc func(data []byte) uint32
 
-// NodeMap stores nodes and you can pick node from NodeMap
+// NodeMap 存储节点，实现从NodeMap中选节点
 type NodeMap struct {
 	hashFunc    HashFunc
 	nodeHashs   []int // sorted
 	nodehashMap map[int]string
 }
 
-// NewNodeMap creates a new NodeMap
+// NewNodeMap 创建新的NodeMap
 func NewNodeMap(fn HashFunc) *NodeMap {
 	m := &NodeMap{
 		hashFunc:    fn,
@@ -27,12 +27,12 @@ func NewNodeMap(fn HashFunc) *NodeMap {
 	return m
 }
 
-// IsEmpty returns if there is no node in NodeMap
+// IsEmpty NodeMap是否为空
 func (m *NodeMap) IsEmpty() bool {
 	return len(m.nodeHashs) == 0
 }
 
-// AddNode add the given nodes into consistent hash circle
+// AddNode 将给定的节点添加到一致的Hash
 func (m *NodeMap) AddNode(keys ...string) {
 	for _, key := range keys {
 		if key == "" {
@@ -45,7 +45,7 @@ func (m *NodeMap) AddNode(keys ...string) {
 	sort.Ints(m.nodeHashs)
 }
 
-// PickNode gets the closest item in the hash to the provided key.
+// PickNode 获取hash中与提供的键最接近的项。
 func (m *NodeMap) PickNode(key string) string {
 	if m.IsEmpty() {
 		return ""
@@ -53,12 +53,10 @@ func (m *NodeMap) PickNode(key string) string {
 
 	hash := int(m.hashFunc([]byte(key)))
 
-	// Binary search for appropriate replica.
+	// 二进制搜索以查找适当的副本
 	idx := sort.Search(len(m.nodeHashs), func(i int) bool {
 		return m.nodeHashs[i] >= hash
 	})
-
-	// Means we have cycled back to the first replica.
 	if idx == len(m.nodeHashs) {
 		idx = 0
 	}
