@@ -53,7 +53,7 @@ func (dict *SimpleDict) PutIfExists(key string, val interface{}) (result int) {
 	return 0
 }
 
-// Remove removes the key and return the number of deleted key-value
+// Remove 删除key，返回key-value的数量
 func (dict *SimpleDict) Remove(key string) (result int) {
 	_, existed := dict.m[key]
 	delete(dict.m, key)
@@ -63,7 +63,7 @@ func (dict *SimpleDict) Remove(key string) (result int) {
 	return 0
 }
 
-// Keys returns all keys in dict
+// Keys 返回dict里的所有keys
 func (dict *SimpleDict) Keys() []string {
 	result := make([]string, len(dict.m))
 	i := 0
@@ -73,7 +73,7 @@ func (dict *SimpleDict) Keys() []string {
 	return result
 }
 
-// ForEach traversal the dict
+// ForEach 遍历dict
 func (dict *SimpleDict) ForEach(consumer Consumer) {
 	for k, v := range dict.m {
 		if !consumer(k, v) {
@@ -82,7 +82,7 @@ func (dict *SimpleDict) ForEach(consumer Consumer) {
 	}
 }
 
-// RandomKeys randomly returns keys of the given number, may contain duplicated key
+// RandomKeys 随机返回给定的数量的key
 func (dict *SimpleDict) RandomKeys(limit int) []string {
 	result := make([]string, limit)
 	for i := 0; i < limit; i++ {
@@ -94,7 +94,6 @@ func (dict *SimpleDict) RandomKeys(limit int) []string {
 	return result
 }
 
-// RandomDistinctKeys randomly returns keys of the given number, won't contain duplicated key
 func (dict *SimpleDict) RandomDistinctKeys(limit int) []string {
 	size := limit
 	if size > len(dict.m) {
