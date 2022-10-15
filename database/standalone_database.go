@@ -12,14 +12,14 @@ import (
 	"strings"
 )
 
-// StandaloneDatabase is a set of multiple database set
+// StandaloneDatabase 设置多个数据库
 type StandaloneDatabase struct {
 	dbSet []*DB
-	// handle aof persistence
+	// AOF持久化
 	aofHandler *aof.AofHandler
 }
 
-// NewStandaloneDatabase creates a redis database,
+// NewStandaloneDatabase 创建redis数据库
 func NewStandaloneDatabase() *StandaloneDatabase {
 	mdb := &StandaloneDatabase{}
 	if config.Properties.Databases == 0 {
@@ -48,8 +48,7 @@ func NewStandaloneDatabase() *StandaloneDatabase {
 	return mdb
 }
 
-// Exec executes command
-// parameter `cmdLine` contains command and its arguments, for example: "set key value"
+// Exec 执行command
 func (mdb *StandaloneDatabase) Exec(c resp.Connection, cmdLine [][]byte) (result resp.Reply) {
 
 	defer func() {
@@ -75,7 +74,7 @@ func (mdb *StandaloneDatabase) Exec(c resp.Connection, cmdLine [][]byte) (result
 	return selectedDB.Exec(c, cmdLine)
 }
 
-// Close graceful shutdown database
+// Close 优雅关机
 func (mdb *StandaloneDatabase) Close() {
 
 }

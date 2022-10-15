@@ -5,7 +5,7 @@ import (
 	"goRedis/resp/reply"
 )
 
-// Ping the server
+// Ping 服务端
 func Ping(db *DB, args [][]byte) resp.Reply {
 	if len(args) == 0 {
 		return &reply.PongReply{}
