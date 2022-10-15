@@ -46,7 +46,7 @@ func init() {
 	logger = log.New(os.Stdout, defaultPrefix, flags)
 }
 
-// Setup initializes logger
+// Setup 初始化logger
 func Setup(settings *Settings) {
 	var err error
 	dir := settings.Path
@@ -75,7 +75,7 @@ func setPrefix(level logLevel) {
 	logger.SetPrefix(logPrefix)
 }
 
-// Debug prints debug log
+// Debug 打印debug级别的logger
 func Debug(v ...interface{}) {
 	mu.Lock()
 	defer mu.Unlock()
@@ -83,7 +83,7 @@ func Debug(v ...interface{}) {
 	logger.Println(v...)
 }
 
-// Info prints normal log
+// Info 打印normal logger
 func Info(v ...interface{}) {
 	mu.Lock()
 	defer mu.Unlock()
@@ -91,7 +91,7 @@ func Info(v ...interface{}) {
 	logger.Println(v...)
 }
 
-// Warn prints warning log
+// Warn 打印warning logger
 func Warn(v ...interface{}) {
 	mu.Lock()
 	defer mu.Unlock()
@@ -99,7 +99,7 @@ func Warn(v ...interface{}) {
 	logger.Println(v...)
 }
 
-// Error prints error log
+// Error 打印error logger
 func Error(v ...interface{}) {
 	mu.Lock()
 	defer mu.Unlock()
@@ -107,7 +107,7 @@ func Error(v ...interface{}) {
 	logger.Println(v...)
 }
 
-// Fatal prints error log then stop the program
+// Fatal 打印错误logger，然后停止程序
 func Fatal(v ...interface{}) {
 	mu.Lock()
 	defer mu.Unlock()
