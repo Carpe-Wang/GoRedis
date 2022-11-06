@@ -43,5 +43,4 @@
 * 再重启系统时进行LoadAof防止重启机器信息丢失。
 
 
-### 注：简易先看一下Resp协议，方便后期发送请求
->*3/r/n$3/r/nset/r/n$4/r/nname/r/n$5/r/npdudo/r/n
+
