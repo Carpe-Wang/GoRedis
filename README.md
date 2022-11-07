@@ -54,12 +54,12 @@
 
 ## 成果展示
 * 启动
-  * ![img.png](img.png)
+  * ![img.png](img/img.png)
 * set测试
-  * ![img_1.png](img_1.png)
+  * ![img_1.png](img/img_1.png)
 * AOF效果
-  * ![img_3.png](img_3.png)
+  * ![img_3.png](img/img_3.png)
 * Get测试
-  * ![img_2.png](img_2.png)
+  * ![img_2.png](img/img_2.png)
 
 # 该项目作为本人毕业课设项目，最后感谢张闻强老师过程中的指导，感谢帮助过我赵嘉宇室友。
