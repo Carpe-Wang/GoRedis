@@ -45,3 +45,17 @@
 
 ### 注：简易先看一下Resp协议，方便后期发送请求
 >*3/r/n$3/r/nset/r/n$4/r/nname/r/n$5/r/npdudo/r/n
+
+
+### 注释：mac
+> 因为我本身使用的是macOS，在使用RESP的时候没办法直接用网络调试助手发送tcp，只能采用telnet命令。
+> 注意重点就是需要先下载Homebrew，才能在mac的终端上执行命令。
+
+
+## 成果展示
+* 启动
+  * ![img.png](img.png)
+* set测试
+  * ![img_1.png](img_1.png)
+* AOF效果
+  * ![img_2.png](img_2.png)
