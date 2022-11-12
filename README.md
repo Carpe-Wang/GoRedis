@@ -82,6 +82,7 @@
 
 # 设计细节
 ### 简易TCP服务器
+* TCP相关配置参考`config.config`和`redis.conf`配置文件
 * 项目中源码
 ```go
 
