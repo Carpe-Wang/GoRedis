@@ -149,4 +149,41 @@ func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
 	return nil
 }
 ```
-> 
+> 用来监听连接，所以
+```go
+func ListenAndServe(listener net.Listener, handler tcp.Handler, closeChan <-chan struct{}) {
+	// listen signal
+	go func() {
+		<-closeChan
+		logger.Info("shutting down...")
+		_ = listener.Close() // listener.Accept() will return err immediately
+		_ = handler.Close()  // close connections
+	}()
+
+	// listen port
+	defer func() {
+		// close during unexpected error
+		_ = listener.Close()
+		_ = handler.Close()
+	}()
+	ctx := context.Background()
+	var waitDone sync.WaitGroup
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			break
+		}
+		// handle
+		logger.Info("accept link")
+		waitDone.Add(1)
+		go func() {
+			defer func() {
+				waitDone.Done()
+			}()
+			handler.Handle(ctx, conn)
+		}()
+	}
+	waitDone.Wait()
+}
+```
+> 一直死循环，除非连接出问题。这样实现一直在等待链接。
