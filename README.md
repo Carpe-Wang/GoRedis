@@ -84,6 +84,7 @@
 ### 简易TCP服务器
 * TCP相关配置参考`config.config`和`redis.conf`配置文件
 * 项目中源码
+
 ```go
 func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 	if h.closing.Get() {
@@ -117,6 +118,35 @@ func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 }
 ```
 >其中Context包主要用来传递超时时间，目前环境，参数等，Conn主要用来处理
-```go
 
+```go
+type Config struct {
+	Address    string        `yaml:"address"`
+	MaxConnect uint32        `yaml:"max-connect"`
+	Timeout    time.Duration `yaml:"timeout"`
+}
 ```
+>在tcp包下的server层定义结构体，用来设定一些链接细节。
+
+```go
+func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
+	closeChan := make(chan struct{})
+	sigCh := make(chan os.Signal)
+	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	go func() {
+		sig := <-sigCh
+		switch sig {
+		case syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+			closeChan <- struct{}{}
+		}
+	}()
+	listener, err := net.Listen("tcp", cfg.Address)
+	if err != nil {
+		return err
+	}
+	logger.Info(fmt.Sprintf("bind: %s, start listening...", cfg.Address))
+	ListenAndServe(listener, handler, closeChan)
+	return nil
+}
+```
+> 
