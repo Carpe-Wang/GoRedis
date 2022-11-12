@@ -85,5 +85,38 @@
 * TCP相关配置参考`config.config`和`redis.conf`配置文件
 * 项目中源码
 ```go
+func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
+	if h.closing.Get() {
+		// closing handler refuse new connection
+		_ = conn.Close()
+	}
+
+	client := &EchoClient{
+		Conn: conn,
+	}
+	h.activeConn.Store(client, struct{}{})
+
+	reader := bufio.NewReader(conn)
+	for {
+		// may occurs: client EOF, client timeout, handler early close
+		msg, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				logger.Info("connection close")
+				h.activeConn.Delete(client)
+			} else {
+				logger.Warn(err)
+			}
+			return
+		}
+		client.Waiting.Add(1)
+		b := []byte(msg)
+		_, _ = conn.Write(b)
+		client.Waiting.Done()
+	}
+}
+```
+>其中Context包主要用来传递超时时间，目前环境，参数等，Conn主要用来处理
+```go
 
 ```
