@@ -208,3 +208,16 @@ Redis 协议将传输的结构数据分为 5 种最⼩单元类型，单元结�
     :1024\r\n
     > 
 # go语言实现RESP协议解析
+* 详细参考resp目录下的代码实现，这里只展示核心
+```go
+type Connection struct {
+    conn net.Conn
+    // waiting until reply finished
+    waitingReply wait.Wait
+    // lock while handler sending response
+    mu sync.Mutex
+    // selected db
+    selectedDB int
+}
+```
+设定一些详细细节
