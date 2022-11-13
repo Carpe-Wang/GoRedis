@@ -190,3 +190,21 @@ func ListenAndServe(listener net.Listener, handler tcp.Handler, closeChan <-chan
 
 # RESP协议
 * 什么是RESP协议
+>RESP 是 Redis 序列化协议的简写。它是⼀种直观的⽂本协议，优势在于实现异常简单，解析性能极好。
+Redis 协议将传输的结构数据分为 5 种最⼩单元类型，单元结束时统⼀加上回⻋换⾏符号\r\n。
+* 细节如下：
+  * 1. 单⾏字符串 以 + 符号开头。
+  * 2. 多⾏字符串 以 $ 符号开头，后跟字符串⻓度。
+  * 3. 整数值 以 : 符号开头，后跟整数的字符串形式。
+  * 4. 错误消息 以 - 符号开头。
+  * 5. 数组 以 * 号开头，后跟数组的⻓度。
+* 示例：
+  * >单⾏字符串 hello world
+    +hello world\r\n
+  * >多⾏字符串 hello world
+    $11\r\nhello world\r\n
+    > 
+  * >整数 1024
+    :1024\r\n
+    > 
+>
