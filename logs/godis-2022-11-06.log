@@ -1,0 +1,52 @@
+[INFO][server.go:42] 2022/11/06 16:46:02 bind: 127.0.0.1:6381, start listening...
+[INFO][server.go:71] 2022/11/06 16:46:18 accept link
+[INFO][handler.go:73] 2022/11/06 16:51:18 connection closed: 127.0.0.1:53324
+[INFO][server.go:71] 2022/11/06 16:51:22 accept link
+[INFO][handler.go:73] 2022/11/06 16:55:22 connection closed: 127.0.0.1:53881
+[INFO][server.go:71] 2022/11/06 16:55:40 accept link
+[INFO][handler.go:73] 2022/11/06 16:56:07 connection closed: 127.0.0.1:54440
+[INFO][server.go:71] 2022/11/06 16:56:17 accept link
+[INFO][handler.go:73] 2022/11/06 16:56:31 connection closed: 127.0.0.1:54444
+[INFO][server.go:71] 2022/11/06 16:56:56 accept link
+[INFO][handler.go:73] 2022/11/06 16:59:38 connection closed: 127.0.0.1:54445
+[INFO][server.go:71] 2022/11/06 17:00:46 accept link
+[INFO][handler.go:73] 2022/11/06 17:01:48 connection closed: 127.0.0.1:54457
+[INFO][server.go:71] 2022/11/06 17:01:54 accept link
+[INFO][handler.go:73] 2022/11/06 17:02:54 connection closed: 127.0.0.1:54460
+[INFO][server.go:71] 2022/11/06 17:02:56 accept link
+[INFO][handler.go:73] 2022/11/06 17:03:10 connection closed: 127.0.0.1:54467
+[INFO][server.go:71] 2022/11/06 17:03:24 accept link
+[ERROR][parser.go:44] 2022/11/06 17:05:38 goroutine 47 [running]:
+runtime/debug.Stack()
+	/Users/wangkaipeng/go/go1.19.1/src/runtime/debug/stack.go:24 +0x64
+goRedis/resp/parser.parseScore.func1()
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:44 +0x3c
+panic({0x102b74240, 0x14000134390})
+	/Users/wangkaipeng/go/go1.19.1/src/runtime/panic.go:890 +0x26c
+goRedis/resp/parser.readLine(0x1400008e4e0, 0x14000054f50)
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:151 +0x3f0
+goRedis/resp/parser.parseScore({0x102f8bfc8, 0x1400009e048}, 0x140000aa180)
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:53 +0xb0
+created by goRedis/resp/parser.ParseStream
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:25 +0xe0
+
+[INFO][server.go:71] 2022/11/06 17:05:50 accept link
+[ERROR][parser.go:44] 2022/11/06 17:27:05 goroutine 52 [running]:
+runtime/debug.Stack()
+	/Users/wangkaipeng/go/go1.19.1/src/runtime/debug/stack.go:24 +0x64
+goRedis/resp/parser.parseScore.func1()
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:44 +0x3c
+panic({0x102b74240, 0x140000a61c8})
+	/Users/wangkaipeng/go/go1.19.1/src/runtime/panic.go:890 +0x26c
+goRedis/resp/parser.readLine(0x1400012a840, 0x14000057f50)
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:151 +0x3f0
+goRedis/resp/parser.parseScore({0x102f8bfc8, 0x14000128088}, 0x14000102540)
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:53 +0xb0
+created by goRedis/resp/parser.ParseStream
+	/Users/wangkaipeng/Desktop/GoRedis/resp/parser/parser.go:25 +0xe0
+
+[INFO][server.go:42] 2022/11/06 17:27:25 bind: 127.0.0.1:6381, start listening...
+[INFO][server.go:71] 2022/11/06 17:27:44 accept link
+[INFO][server.go:71] 2022/11/06 17:32:09 accept link
+[INFO][handler.go:73] 2022/11/06 17:49:54 connection closed: 127.0.0.1:54727
+[INFO][handler.go:73] 2022/11/06 17:49:56 connection closed: 127.0.0.1:54658
