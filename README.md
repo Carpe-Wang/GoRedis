@@ -1,5 +1,5 @@
 # GoRedis(该项目为本人2023年河南工业大学本科毕业课设)
-> The project is currently open source because of the application of American graduate students. But no plagiarism!
+> The project is currently open source because of the application of American Graduate Project. But no plagiarism!
 ### 项目简介
 
 * 使用go语言实现Redis的基础命令，比如set，get和AOF等基础功能。
