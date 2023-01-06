@@ -1,4 +1,4 @@
-# GoRedis(该项目为本人2023年河南工业大学本科毕业课设)
+# GoRedis
 [中文](https://github.com/Carpe-Wang/GoRedis#readme)
 
 [English](https://github.com/Carpe-Wang/GoRedis/blob/main/English.md)
