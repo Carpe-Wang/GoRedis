@@ -3,7 +3,6 @@
 
 [English](https://github.com/Carpe-Wang/GoRedis/blob/main/English.md)
 ### 项目简介
-# zheshiyigeceshi
 * 使用go语言实现Redis的基础命令，比如set，get和AOF等基础功能。
 
 ### 使用方法
