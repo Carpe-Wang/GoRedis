@@ -19,32 +19,26 @@ import (
 	"io"
 )
 
-// EchoHandler echos received line to client, using for test
-// EchoHandler echos received line to client, using for test
 type EchoHandler struct {
 	activeConn sync.Map
 	closing    atomic.Boolean
 }
 
-// MakeEchoHandler creates EchoHandler
 func MakeHandler() *EchoHandler {
 	return &EchoHandler{}
 }
 
-// EchoClient is client for EchoHandler, using for test
 type EchoClient struct {
 	Conn    net.Conn
 	Waiting wait.Wait
 }
 
-// Close close connection
 func (c *EchoClient) Close() error {
 	c.Waiting.WaitWithTimeout(10 * time.Second)
 	c.Conn.Close()
 	return nil
 }
 
-// Handle echos received line to client
 func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 	if h.closing.Get() {
 		// closing handler refuse new connection
@@ -58,7 +52,7 @@ func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 
 	reader := bufio.NewReader(conn)
 	for {
-		// may occurs: client EOF, client timeout, handler early close
+		// 可能会发生clientEOF，client超时，handler提前关闭
 		msg, err := reader.ReadString('\n')
 		if err != nil {
 			if err == io.EOF {
@@ -76,7 +70,7 @@ func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 	}
 }
 
-// Close stops echo handler
+// Close 关闭停止echoHandler
 func (h *EchoHandler) Close() error {
 	logger.Info("handler shutting down...")
 	h.closing.Set(true)
