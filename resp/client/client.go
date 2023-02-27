@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// Client is a pipeline mode redis client
+// Client 管道模式的redis客户端
 type Client struct {
 	conn        net.Conn
 	pendingReqs chan *request // wait to send
