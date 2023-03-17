@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-const configFile string = "redis.conf"
+const configFile string = "redis.conf" //记录集群端口信息
 
 var defaultProperties = &config.ServerProperties{
 	Bind: "0.0.0.0",

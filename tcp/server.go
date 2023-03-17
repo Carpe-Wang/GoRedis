@@ -26,8 +26,8 @@ type Config struct {
 // ListenAndServeWithSignal 绑定端口，处理请求，一直阻塞直到收到signal(stop)
 func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
 	closeChan := make(chan struct{})
-	sigCh := make(chan os.Signal)
-	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	sigCh := make(chan os.Signal) //操作系统提供的信号
+	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT, syscall.SIGIO)
 	go func() {
 		sig := <-sigCh
 		switch sig {
@@ -48,7 +48,7 @@ func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
 func ListenAndServe(listener net.Listener, handler tcp.Handler, closeChan <-chan struct{}) {
 	// listen signal
 	go func() {
-		<-closeChan
+		<-closeChan //不需要返回值，因为是一个空的结构体，也就相当于是一个信号的作用
 		logger.Info("shutting down...")
 		_ = listener.Close() // listener.Accept() will return err immediately
 		_ = handler.Close()  // close connections
@@ -61,7 +61,7 @@ func ListenAndServe(listener net.Listener, handler tcp.Handler, closeChan <-chan
 		_ = handler.Close()
 	}()
 	ctx := context.Background()
-	var waitDone sync.WaitGroup
+	var waitDone sync.WaitGroup //等待所有的客户端
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -73,9 +73,9 @@ func ListenAndServe(listener net.Listener, handler tcp.Handler, closeChan <-chan
 		go func() {
 			defer func() {
 				waitDone.Done()
-			}()
+			}() //防止handler里面出现err
 			handler.Handle(ctx, conn)
 		}()
 	}
-	waitDone.Wait()
+	waitDone.Wait() //有问题的话，防止直接退出，所以等待所有结束
 }
