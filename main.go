@@ -25,7 +25,7 @@ func main() {
 	logger.Setup(&logger.Settings{
 		Path:       "logs",
 		Name:       "godis",
-		Ext:        "log",
+		Ext:        "log ",
 		TimeFormat: "2006-01-02",
 	})
 
