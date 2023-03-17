@@ -24,24 +24,19 @@ type EchoHandler struct {
 	closing    atomic.Boolean
 }
 
-func MakeHandler() *EchoHandler {
-	return &EchoHandler{}
-}
-
 type EchoClient struct {
 	Conn    net.Conn
-	Waiting wait.Wait
+	Waiting wait.Wait //多实现一个超时功能
 }
 
 func (c *EchoClient) Close() error {
-	c.Waiting.WaitWithTimeout(10 * time.Second)
-	c.Conn.Close()
+	c.Waiting.WaitWithTimeout(10 * time.Second) //等待一段时间，防止任务一直做不完
+	c.Conn.Close()                              //因为这里直接关闭了，就不对err做处理了
 	return nil
 }
 
 func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 	if h.closing.Get() {
-		// closing handler refuse new connection
 		_ = conn.Close()
 	}
 
@@ -53,7 +48,7 @@ func (h *EchoHandler) Handle(ctx context.Context, conn net.Conn) {
 	reader := bufio.NewReader(conn)
 	for {
 		// 可能会发生clientEOF，client超时，handler提前关闭
-		msg, err := reader.ReadString('\n')
+		msg, err := reader.ReadString('\n') //
 		if err != nil {
 			if err == io.EOF {
 				logger.Info("connection close")
