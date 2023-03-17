@@ -50,14 +50,6 @@ func execType(db *DB, args [][]byte) resp.Reply {
 	switch entity.Data.(type) {
 	case []byte:
 		return reply.MakeStatusReply("string")
-		//case *list.LinkedList:
-		//    return reply.MakeStatusReply("list")
-		//case dict.Dict:
-		//    return reply.MakeStatusReply("hash")
-		//case *set.Set:
-		//    return reply.MakeStatusReply("set")
-		//case *sortedset.SortedSet:
-		//    return reply.MakeStatusReply("zset")
 	}
 	return &reply.UnknownErrReply{}
 }
@@ -68,7 +60,7 @@ func execRename(db *DB, args [][]byte) resp.Reply {
 		return reply.MakeErrReply("ERR wrong number of arguments for 'rename' command")
 	}
 	src := string(args[0])
-	dest := string(args[1])
+	dest := string(args[1]) //需要修改为的名字
 
 	entity, ok := db.GetEntity(src)
 	if !ok {
