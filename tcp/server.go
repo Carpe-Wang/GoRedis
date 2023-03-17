@@ -26,7 +26,7 @@ type Config struct {
 // ListenAndServeWithSignal 绑定端口，处理请求，一直阻塞直到收到signal(stop)
 func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
 	closeChan := make(chan struct{})
-	sigCh := make(chan os.Signal) //操作系统提供的信号
+	sigCh := make(chan os.Signal, 1) //操作系统提供的信号
 	signal.Notify(sigCh, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT, syscall.SIGIO)
 	go func() {
 		sig := <-sigCh
