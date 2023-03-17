@@ -200,7 +200,7 @@ func execIncr(db *DB, args [][]byte) resp.Reply {
 			Data: []byte(strconv.FormatInt(val+1, 10)),
 		})
 		db.addAof(utils.ToCmdLine2("incr", args...))
-		return reply.MakeIntReply(val + 1)
+		return r eply.MakeIntReply(val + 1)
 	}
 	db.PutEntity(key, &database.DataEntity{
 		Data: []byte("1"),
