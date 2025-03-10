@@ -1,6 +1,7 @@
 package database
 
 import (
+	"goRedis/datastruct/sortedset"
 	"goRedis/interface/resp"
 	"goRedis/lib/utils"
 	"goRedis/lib/wildcard"
@@ -50,6 +51,8 @@ func execType(db *DB, args [][]byte) resp.Reply {
 	switch entity.Data.(type) {
 	case []byte:
 		return reply.MakeStatusReply("string")
+	case *sortedset.SortedSet:
+		return reply.MakeStatusReply("zset")
 	}
 	return &reply.UnknownErrReply{}
 }
