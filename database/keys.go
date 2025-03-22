@@ -6,6 +6,8 @@ import (
 	"goRedis/lib/utils"
 	"goRedis/lib/wildcard"
 	"goRedis/resp/reply"
+	"strconv"
+	"time"
 )
 
 // execDel removes a key from db
@@ -108,6 +110,67 @@ func execKeys(db *DB, args [][]byte) resp.Reply {
 	return reply.MakeMultiBulkReply(result)
 }
 
+// execExpire sets expiration time for the given key
+func execExpire(db *DB, args [][]byte) resp.Reply {
+	key := string(args[0])
+
+	// Parse seconds
+	seconds, err := strconv.ParseInt(string(args[1]), 10, 64)
+	if err != nil {
+		return reply.MakeErrReply("ERR value is not an integer or out of range")
+	}
+	if seconds <= 0 {
+		// Remove key if given a non-positive expiration time
+		db.Remove(key)
+		return reply.MakeIntReply(1)
+	}
+
+	// Get entity
+	entity, exists := db.GetEntity(key)
+	if !exists {
+		return reply.MakeIntReply(0)
+	}
+
+	// Calculate expiration time
+	expireTime := time.Now().UnixNano()/1e6 + seconds*1000 // Convert to milliseconds
+	entity.ExpireTime = expireTime
+
+	// Store the key back
+	db.PutEntity(key, entity)
+
+	db.addAof(utils.ToCmdLine2("expire", args...))
+	return reply.MakeIntReply(1)
+}
+
+// execTTL returns the remaining time to live of a key
+func execTTL(db *DB, args [][]byte) resp.Reply {
+	key := string(args[0])
+
+	// Get entity
+	entity, exists := db.GetEntity(key)
+	if !exists {
+		return reply.MakeIntReply(-2) // Key does not exist
+	}
+
+	// If no expiration
+	if entity.ExpireTime == 0 {
+		return reply.MakeIntReply(-1) // No expiration
+	}
+
+	// Calculate remaining time
+	now := time.Now().UnixNano() / 1e6 // current time in milliseconds
+	remaining := entity.ExpireTime - now
+
+	if remaining <= 0 {
+		// Key has expired
+		db.Remove(key)
+		return reply.MakeIntReply(-2)
+	}
+
+	// Return remaining seconds
+	return reply.MakeIntReply(remaining / 1000) // Convert from milliseconds to seconds
+}
+
 func init() {
 	RegisterCommand("Del", execDel, -2)
 	RegisterCommand("Exists", execExists, -2)
@@ -116,4 +179,6 @@ func init() {
 	RegisterCommand("Type", execType, 2)
 	RegisterCommand("Rename", execRename, 3)
 	RegisterCommand("RenameNx", execRenameNx, 3)
+	RegisterCommand("Expire", execExpire, 3)
+	RegisterCommand("TTL", execTTL, 2)
 }

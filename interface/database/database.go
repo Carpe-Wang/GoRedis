@@ -16,5 +16,6 @@ type Database interface {
 
 // DataEntity 存储绑定到键的数据，包括字符串、列表、哈希、集等
 type DataEntity struct {
-	Data interface{}
+	Data       interface{}
+	ExpireTime int64 // Unix timestamp in milliseconds, 0 means no expiration
 }
