@@ -7,13 +7,17 @@ import (
 	"goRedis/interface/resp"
 	"goRedis/resp/reply"
 	"strings"
+	"time"
 )
 
 // DB stores data and execute user's commands
 type DB struct {
-	index  int // 数据编号
+	index  int
 	data   dict.Dict
 	addAof func(CmdLine)
+
+	// used for checking expiration
+	ttlKeys dict.Dict // key -> expireTime
 }
 
 // ExecFunc command执行器的接口
@@ -25,8 +29,9 @@ type CmdLine = [][]byte
 // makeDB 创建DB实例
 func makeDB() *DB {
 	db := &DB{
-		data:   dict.MakeSyncDict(),
-		addAof: func(line CmdLine) {},
+		data:    dict.MakeSyncDict(),
+		addAof:  func(line CmdLine) {},
+		ttlKeys: dict.MakeSyncDict(),
 	}
 	return db
 }
@@ -57,12 +62,23 @@ func validateArity(arity int, cmdArgs [][]byte) bool {
 /* ---- 连接数据库 ----- */
 
 func (db *DB) GetEntity(key string) (*database.DataEntity, bool) {
-
 	raw, ok := db.data.Get(key)
 	if !ok {
 		return nil, false
 	}
+
 	entity, _ := raw.(*database.DataEntity)
+
+	// Check if the key is expired
+	if entity.ExpireTime > 0 {
+		now := time.Now().UnixNano() / 1e6 // current time in milliseconds
+		if entity.ExpireTime <= now {
+			// Key is expired, remove it
+			db.Remove(key)
+			return nil, false
+		}
+	}
+
 	return entity, true
 }
 

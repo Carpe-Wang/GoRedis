@@ -7,6 +7,7 @@ import (
 	"goRedis/resp/reply"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (db *DB) getAsString(key string) ([]byte, reply.ErrorReply) {
@@ -43,28 +44,49 @@ func execSet(db *DB, args [][]byte) resp.Reply {
 	key := string(args[0])
 	value := args[1]
 	policy := upsertPolicy
+	var ttl int64 = 0 // default no expiration
+
 	// parse options
 	if len(args) > 2 {
-		for i := 2; i < len(args); i++ {
+		i := 2
+		for i < len(args) {
 			arg := strings.ToUpper(string(args[i]))
 			if arg == "NX" { // insert
 				if policy == updatePolicy {
 					return &reply.SyntaxErrReply{}
 				}
 				policy = insertPolicy
+				i++
 			} else if arg == "XX" { // update policy
 				if policy == insertPolicy {
 					return &reply.SyntaxErrReply{}
 				}
 				policy = updatePolicy
+				i++
+			} else if arg == "EX" { // expire in seconds
+				if i+1 >= len(args) {
+					return &reply.SyntaxErrReply{}
+				}
+				seconds, err := strconv.ParseInt(string(args[i+1]), 10, 64)
+				if err != nil || seconds <= 0 {
+					return reply.MakeErrReply("ERR invalid expire time in set")
+				}
+				ttl = seconds * 1000 // convert to milliseconds
+				i += 2
 			} else {
 				return &reply.SyntaxErrReply{}
 			}
 		}
 	}
 
+	// Create entity with optional expiration
 	entity := &database.DataEntity{
 		Data: value,
+	}
+
+	// Add expiration time if TTL is set
+	if ttl > 0 {
+		entity.ExpireTime = time.Now().UnixNano()/1e6 + ttl
 	}
 
 	var result int
